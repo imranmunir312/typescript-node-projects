@@ -1,6 +1,6 @@
 {
   "name": "@imranmunir/calculator-cli",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Basic Cli Calculator developed using Node.js, TypeScript, Inquirer.k, RxJS and Chalk.",
   "main": "index.js",
   "type": "module",
