@@ -1,74 +1,81 @@
-#!/usr/bin/env node
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+#! /usr/bin/env node
+import RS from "rxjs";
 import inquirer from "inquirer";
 import chalk from "chalk";
-const validateNumber = (input) => {
-    const number = parseInt(input);
-    if (!isNaN(number)) {
-        return true;
+const prompts = new RS.Subject();
+let expression = "";
+const validateInput = (input) => isNaN(input) ? "Please Enter a valid Number!" : true;
+function* counter() {
+    let count = 0;
+    while (true) {
+        yield count++;
     }
-    return "ReEnter Number";
-};
-const calculate = ({ firstNum, secondNum, operator, }) => {
-    switch (operator) {
-        case "+ (add)":
-            return parseInt(firstNum) + parseInt(secondNum);
-        case "- (minus)":
-            return parseInt(firstNum) - parseInt(secondNum);
-        case "/ (divide)":
-            return parseInt(firstNum) / parseInt(secondNum);
-        case "x (multiply)":
-            return parseInt(firstNum) * parseInt(secondNum);
-        default:
-            return "invalid operator";
+}
+const count = counter();
+const rxjsSubscriber = inquirer
+    .prompt(prompts)
+    .ui.process.subscribe(({ name, answer }) => {
+    const iteration = count.next().value;
+    if (name.includes("continue") && !answer) {
+        prompts.complete();
     }
-};
-const calculator = () => __awaiter(void 0, void 0, void 0, function* () {
-    const values = yield inquirer.prompt([
-        {
-            name: "firstNum",
-            type: "input",
-            message: "Enter your First number:",
-            validate: validateNumber,
-        },
-        {
-            name: "secondNum",
-            type: "number",
-            message: "Enter your Second Number:",
-            validate: validateNumber,
-        },
-        {
-            name: "operator",
-            type: "list",
-            choices: ["+ (add)", "- (minus)", "/ (divide)", "x (multiply)"],
-            message: "Choose operator",
-        },
-    ]);
-    console.log(chalk.blue("Your Answer is: ", calculate(values)));
-    yield promptMoreCalculation();
-});
-const promptMoreCalculation = () => __awaiter(void 0, void 0, void 0, function* () {
-    const { toBeContinue, } = yield inquirer.prompt([
-        {
-            name: "toBeContinue",
+    else if (name.includes("operator") && answer === "=") {
+        console.log(chalk.green(`Your Answer: ${expression} = ${eval(expression)}`));
+        expression = "";
+        prompts.next({
             type: "confirm",
-            message: "Do you want to perform more actions",
-        },
-    ]);
-    if (toBeContinue === true) {
-        yield calculator();
+            name: `continue--${iteration}`,
+            message: "Do you want to continue?",
+        });
     }
-    else
-        console.log(chalk.blue("Have a Nice Day!"));
+    else {
+        expression += " " + answer;
+        if (name.includes("number")) {
+            prompts.next({
+                type: "list",
+                name: `operator--${iteration}`,
+                message: "Operator:",
+                choices: [
+                    {
+                        name: "+ (Add)",
+                        value: "+",
+                    },
+                    {
+                        name: "- (Subtract)",
+                        value: "-",
+                    },
+                    {
+                        name: "* (Multiply)",
+                        value: "*",
+                    },
+                    {
+                        name: "/ (Divide)",
+                        value: "/",
+                    },
+                    {
+                        name: "= (Equals)",
+                        value: "=",
+                    },
+                ],
+            });
+        }
+        else {
+            prompts.next({
+                type: "input",
+                name: `number--${iteration}`,
+                message: "Number:",
+                validate: validateInput,
+            });
+        }
+    }
 });
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield calculator();
-}))();
+prompts.next({
+    type: "input",
+    name: "number",
+    message: "Number:",
+    validate: validateInput,
+});
+process.on("exit", () => {
+    console.log(chalk.bgYellow("Thank you for using this simple calculator!"));
+    rxjsSubscriber.unsubscribe();
+});
