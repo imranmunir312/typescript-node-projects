@@ -10,10 +10,10 @@
     "publish-package": "tsc && npm publish --access public"
   },
   "bin": {
-    "calculator": "index.js"
+    "@imranmunir/calculator-cli": "index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "imranmunir",
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.3.0",
