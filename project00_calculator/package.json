@@ -1,16 +1,16 @@
 {
-  "name": "project00_calculator",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@imranmunir/calculator-cli",
+  "version": "2.0.3",
+  "description": "Basic Cli Calculator developed using Node.js, TypeScript, Inquirer.k, RxJS and Chalk.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "ts-node index.ts",
     "build": "tsc",
-    "publish": "npm run build && npm publish --access public"
+    "publish-package": "tsc && npm publish --access public"
   },
   "bin": {
-    "calculator": "./index.js"
+    "calculator": "index.js"
   },
   "keywords": [],
   "author": "",
