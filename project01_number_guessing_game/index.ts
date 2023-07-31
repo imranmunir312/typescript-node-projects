@@ -276,7 +276,7 @@ displayMainmenu();
 
 process.on("exit", () => {
   console.log(
-    chalk.magentaBright("Thank you for using this playing this game 👋!")
+    chalk.magentaBright("Thank you for using this playing this game 👋!\n")
   );
   subscriber.unsubscribe();
 });

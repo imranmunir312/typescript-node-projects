@@ -210,6 +210,6 @@ const subscriber = inquirer
 });
 displayMainmenu();
 process.on("exit", () => {
-    console.log(chalk.magentaBright("Thank you for using this playing this game 👋!"));
+    console.log(chalk.magentaBright("Thank you for using this playing this game 👋!\n"));
     subscriber.unsubscribe();
 });
